@@ -24,9 +24,9 @@
     },
     {
       "file": "taken/discover.py",
-      "cc": 130,
-      "commits": 32,
-      "hotspot": 4160
+      "cc": 131,
+      "commits": 33,
+      "hotspot": 4323
     },
     {
       "file": "taken/health.py",
