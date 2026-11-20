@@ -488,6 +488,15 @@ def test_discover_jobs_flag_rejected_when_zero(faked, capsys):
     assert "--jobs must be at least 1" in capsys.readouterr().err
 
 
+def test_discover_jobs_zero_exits_before_identity_probe(monkeypatch, capsys):
+    """--jobs 0 is a usage error: exit 3 before the budget identity probe runs (#577)."""
+    probes = []
+    monkeypatch.setattr(checks, "_github_identity", lambda: probes.append(1))
+    assert main(["--discover", "--label", "good first issue", "--jobs", "0"]) == 3
+    assert "--jobs must be at least 1" in capsys.readouterr().err
+    assert probes == []
+
+
 def test_discover_negative_limit_yields_empty_not_truncated(monkeypatch):
     """A negative limit must not slice off the top candidate (ranked[:-1])."""
     items = [search_item(1, 1), search_item(2, 2)]
