@@ -427,6 +427,11 @@ def _run_discover_command(parser, args):
             discover.check_language(args.language)
         except ValueError as exc:
             parser.error(f"argument --language: {exc}")
+    if args.jobs < 1:
+        # Usage error: exit 3 before _run_with_stats so the budget identity
+        # probe (a gh call) never fires, as for unparseable targets.
+        print("error: --jobs must be at least 1", file=sys.stderr)
+        return 3
     return _run_with_stats(run_discover, args, verbose=args.verbose, debug=args.debug)
 
 
@@ -639,9 +644,6 @@ def _print_discover_results(results, args):
 
 def run_discover(args):
     """Search, verify, and rank the top candidates."""
-    if args.jobs < 1:
-        print("error: --jobs must be at least 1", file=sys.stderr)
-        return 3
     bar = _make_progress_bar(args)
     try:
         results = discover.discover(_discover_options(args, bar))
